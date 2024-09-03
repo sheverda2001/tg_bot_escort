@@ -510,7 +510,7 @@ bot.on('callback_query', async (msg) => {
                     added_curator = true;
                 }
             })
-
+            console.log("Пользователь", user?.friend_invitation)
             try {
                 if (msg.from.username) {
                     await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
@@ -536,87 +536,185 @@ bot.on('callback_query', async (msg) => {
 
                 if (added_curator) {
                     if (msg.from.username) {
-                        await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
-                            chat_id: adminId,
-                            text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
-                                `├ Модель: ${models[userInfo.current_model].name}\n` +
-                                `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
-                                `├ Место встречи: ${userInfo.date_locate} \n` +
-                                `├ Оплата: банковской картой\n` +
-                                `├ Цена: ${userInfo.current_model_price} RUB \n` +
-                                `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
-                                `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
-                                `🤖 Информация о боте:\n` +
-                                `├ Сервис: ESCORT\n` +
-                                `└ Бот: @MeganModelsEscortBot`,
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                    [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
-                                ]
-                            }
-                        })
+                        if (user?.friend_invitation) {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: банковской картой\n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
+                                    `├ Доля реферала: ${(userInfo.current_model_price/100)*3} RUB\n` +
+                                    `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
+                                    ]
+                                }
+                            })
+                        } else {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: банковской картой\n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
+                                    `├ Доля реферала: ${(userInfo.current_model_price/100)*3} RUB\n` +
+                                    `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
+                                    ]
+                                }
+                            })
+                        }
                     } else {
-                        await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
-                            chat_id: adminId,
-                            text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
-                                `├ Модель: ${models[userInfo.current_model].name}\n` +
-                                `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
-                                `├ Место встречи: ${userInfo.date_locate} \n` +
-                                `├ Оплата: банковской картой\n` +
-                                `├ Цена: ${userInfo.current_model_price} RUB \n` +
-                                `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
-                                `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
-                                `🤖 Информация о боте:\n` +
-                                `├ Сервис: ESCORT\n` +
-                                `└ Бот: @MeganModelsEscortBot`,
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                    [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
-                                ]
-                            }
-                        })
+                        if (user?.friend_invitation) {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: банковской картой\n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
+                                    `├ Доля реферала: ${(userInfo.current_model_price/100)*3} RUB\n` +
+                                    `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
+                                    ]
+                                }
+                            })
+                        } else {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: банковской картой\n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
+                                    `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                    ]
+                                }
+                            })
+                        }
                     }
                 } else if (added_curator === false) {
                     if (msg.from.username) {
-                        await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
-                            chat_id: adminId,
-                            text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
-                                `├ Модель: ${models[userInfo.current_model].name}\n` +
-                                `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
-                                `├ Место встречи: ${userInfo.date_locate} \n` +
-                                `├ Оплата: банковской картой\n` +
-                                `├ Цена: ${userInfo.current_model_price} RUB \n` +
-                                `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
-                                `🤖 Информация о боте:\n` +
-                                `├ Сервис: ESCORT\n` +
-                                `└ Бот: @MeganModelsEscortBot`,
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                ]
-                            }
-                        })
+                        if (user?.friend_invitation) {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: банковской картой\n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля реферала: ${(userInfo.current_model_price/100)*3} RUB\n` +
+                                    `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
+                                    ]
+                                }
+                            })
+                        } else {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: банковской картой\n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                    ]
+                                }
+                            })
+                        }
                     } else {
-                        await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
-                            chat_id: adminId,
-                            text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
-                                `├ Модель: ${models[userInfo.current_model].name}\n` +
-                                `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
-                                `├ Место встречи: ${userInfo.date_locate} \n` +
-                                `├ Оплата: банковской картой\n` +
-                                `├ Цена: ${userInfo.current_model_price} RUB \n` +
-                                `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
-                                `🤖 Информация о боте:\n` +
-                                `├ Сервис: ESCORT\n` +
-                                `└ Бот: @MeganModelsEscortBot`,
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                ]
-                            }
-                        })
+                        if (user?.friend_invitation) {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: банковской картой\n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля реферала: ${(userInfo.current_model_price/100)*3} RUB\n` +
+                                    `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
+                                    ]
+                                }
+                            })
+                        } else {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: банковской картой\n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                    ]
+                                }
+                            })
+                        }
                     }
                 }
             } catch (e) {
@@ -696,87 +794,183 @@ bot.on('callback_query', async (msg) => {
                 }
                 if (added_curator) {
                     if (msg.from.username) {
-                        await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
-                            chat_id: adminId,
-                            text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
-                                `├ Модель: ${models[userInfo.current_model].name}\n` +
-                                `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
-                                `├ Место встречи: ${userInfo.date_locate} \n` +
-                                `├ Оплата: ${crypto_currency} \n` +
-                                `├ Цена: ${userInfo.current_model_price} RUB \n` +
-                                `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
-                                `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
-                                `🤖 Информация о боте:\n` +
-                                `├ Сервис: ESCORT\n` +
-                                `└ Бот: @MeganModelsEscortBot`,
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                    [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
-                                ]
-                            }
-                        })
+                        if (user?.friend_invitation) {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: ${crypto_currency} \n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
+                                    `├ Доля реферала: ${(userInfo.current_model_price/100)*3} RUB\n` +
+                                    `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
+                                    ]
+                                }
+                            })
+                        } else {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: ${crypto_currency} \n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
+                                    `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                    ]
+                                }
+                            })
+                        }
                     } else {
-                        await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
-                            chat_id: adminId,
-                            text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
-                                `├ Модель: ${models[userInfo.current_model].name}\n` +
-                                `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
-                                `├ Место встречи: ${userInfo.date_locate} \n` +
-                                `├ Оплата: ${crypto_currency} \n` +
-                                `├ Цена: ${userInfo.current_model_price} RUB \n` +
-                                `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
-                                `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
-                                `🤖 Информация о боте:\n` +
-                                `├ Сервис: ESCORT\n` +
-                                `└ Бот: @MeganModelsEscortBot`,
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                    [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
-                                ]
-                            }
-                        })
+                        if (user?.friend_invitation) {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: ${crypto_currency} \n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
+                                    `├ Доля реферала: ${(userInfo.current_model_price/100)*3} RUB\n` +
+                                    `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
+                                    ]
+                                }
+                            })
+                        } else {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: ${crypto_currency} \n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля воркера: ${(userInfo.current_model_price/100)*60} RUB\n` +
+                                    `└ Доля куратора: ${(userInfo.current_model_price/100)*20} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                    ]
+                                }
+                            })
+                        }
                     }
                 } else if (added_curator === false) {
                     if (msg.from.username) {
-                        await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
-                            chat_id: adminId,
-                            text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
-                                `├ Модель: ${models[userInfo.current_model].name}\n` +
-                                `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
-                                `├ Место встречи: ${userInfo.date_locate} \n` +
-                                `├ Оплата: ${crypto_currency} \n` +
-                                `├ Цена: ${userInfo.current_model_price} RUB \n` +
-                                `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
-                                `🤖 Информация о боте:\n` +
-                                `├ Сервис: ESCORT\n` +
-                                `└ Бот: @MeganModelsEscortBot`,
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                ]
-                            }
-                        })
+                        if (user?.friend_invitation) {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: ${crypto_currency} \n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля реферала: ${(userInfo.current_model_price/100)*3} RUB\n` +
+                                    `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
+                                    ]
+                                }
+                            })
+                        } else {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт @${msg.from.username} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: ${crypto_currency} \n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                    ]
+                                }
+                            })
+                        }
                     } else {
-                        await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
-                            chat_id: adminId,
-                            text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
-                                `├ Модель: ${models[userInfo.current_model].name}\n` +
-                                `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
-                                `├ Место встречи: ${userInfo.date_locate} \n` +
-                                `├ Оплата: ${crypto_currency} \n` +
-                                `├ Цена: ${userInfo.current_model_price} RUB \n` +
-                                `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
-                                `🤖 Информация о боте:\n` +
-                                `├ Сервис: ESCORT\n` +
-                                `└ Бот: @MeganModelsEscortBot`,
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                ]
-                            }
-                        })
+                        if (user?.friend_invitation) {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: ${crypto_currency} \n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `├ Доля реферала: ${(userInfo.current_model_price/100)*3} RUB\n` +
+                                    `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                        [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
+                                    ]
+                                }
+                            })
+                        } else {
+                            await axios.post(`https://api.telegram.org/bot${workPanelToken}/sendMessage`, {
+                                chat_id: adminId,
+                                text: `ℹ️ Мамонт ${msg.from.first_name} (ID: ${msg.from.id}) создал заявку на оформление модели\n` +
+                                    `├ Модель: ${models[userInfo.current_model].name}\n` +
+                                    `├ Воркер: @${user.user_name} (ID: ${user.id_user}) \n` +
+                                    `├ Место встречи: ${userInfo.date_locate} \n` +
+                                    `├ Оплата: ${crypto_currency} \n` +
+                                    `├ Цена: ${userInfo.current_model_price} RUB \n` +
+                                    `└ Доля воркера: ${(userInfo.current_model_price/100)*80} RUB\n\n` +
+                                    `🤖 Информация о боте:\n` +
+                                    `├ Сервис: ESCORT\n` +
+                                    `└ Бот: @MeganModelsEscortBot`,
+                                reply_markup: {
+                                    inline_keyboard: [
+                                        [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
+                                    ]
+                                }
+                            })
+                        }
                     }
                 }
             } catch (e) {
