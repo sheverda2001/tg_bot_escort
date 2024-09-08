@@ -505,10 +505,13 @@ bot.on('callback_query', async (msg) => {
             const user = await workerUser.findOne({id_user: workerId})
             const curators = await CuratorSchema.find()
             let added_curator = false;
-            curators[0].users.forEach(user => {
-                if (user.id_user === msg.from.id) {
-                    added_curator = true;
-                }
+            curators.forEach(curator => {
+                curator.users.forEach(user => {
+                    if (user.id_user === msg.from.id) {
+                        added_curator = true;
+                        userState.curator = curator
+                    }
+                })
             })
             console.log("Пользователь", user?.friend_invitation)
             try {
@@ -554,7 +557,7 @@ bot.on('callback_query', async (msg) => {
                                 reply_markup: {
                                     inline_keyboard: [
                                         [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${userState.curator.id_user}` }],
                                         [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
                                     ]
                                 }
@@ -577,7 +580,7 @@ bot.on('callback_query', async (msg) => {
                                 reply_markup: {
                                     inline_keyboard: [
                                         [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${userState.curator.id_user}` }],
                                         [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
                                     ]
                                 }
@@ -602,7 +605,7 @@ bot.on('callback_query', async (msg) => {
                                 reply_markup: {
                                     inline_keyboard: [
                                         [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${userState.curator.id_user}` }],
                                         [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
                                     ]
                                 }
@@ -624,7 +627,7 @@ bot.on('callback_query', async (msg) => {
                                 reply_markup: {
                                     inline_keyboard: [
                                         [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${userState.curator.id_user}` }],
                                     ]
                                 }
                             })
@@ -812,7 +815,7 @@ bot.on('callback_query', async (msg) => {
                                 reply_markup: {
                                     inline_keyboard: [
                                         [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${userState.curator.id_user}` }],
                                         [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
                                     ]
                                 }
@@ -834,7 +837,7 @@ bot.on('callback_query', async (msg) => {
                                 reply_markup: {
                                     inline_keyboard: [
                                         [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${userState.curator.id_user}` }],
                                     ]
                                 }
                             })
@@ -858,7 +861,7 @@ bot.on('callback_query', async (msg) => {
                                 reply_markup: {
                                     inline_keyboard: [
                                         [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${userState.curator.id_user}` }],
                                         [{ text: '💲 Перевести рефералу', callback_data: `transfer_money_${user?.friend_invitation}` }],
                                     ]
                                 }
@@ -880,7 +883,7 @@ bot.on('callback_query', async (msg) => {
                                 reply_markup: {
                                     inline_keyboard: [
                                         [{ text: '💲 Перевести воркеру', callback_data: `transfer_money_${user.id_user}` }],
-                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${ourCuratorID}` }],
+                                        [{ text: '💲 Перевести куратору', callback_data: `transfer_money_${userState.curator.id_user}` }],
                                     ]
                                 }
                             })
