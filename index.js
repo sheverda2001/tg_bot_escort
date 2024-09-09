@@ -13,6 +13,8 @@ const CuratorSchema = require("./models/CuratorSchema");
 
 
 
+
+
 const app = express()
 const apiCityKey = "86ce2b15e4bf10e0563d6671ba9002c3"
 const dbURI = 'mongodb+srv://nsewerda04:soket775@cluster0.kkg0ems.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
