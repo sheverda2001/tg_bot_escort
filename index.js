@@ -10,7 +10,6 @@ const AllButtons = require("./models/AllButtons");
 const workerUser = require("./models/UserWorkertsSchem");
 const express = require("express");
 const CuratorSchema = require("./models/CuratorSchema");
-
 const app = express()
 const apiCityKey = "86ce2b15e4bf10e0563d6671ba9002c3"
 const dbURI = 'mongodb+srv://nsewerda04:soket775@cluster0.kkg0ems.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
@@ -19,6 +18,8 @@ const convertRUBtoUSDTUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=t
 const convertUSDTtoBTCUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=tether,bitcoin&vs_currencies=usd';
 const convertUSDTtoETHUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=tether,ethereum&vs_currencies=usd';
 const PORT = process.env.PORT || 3000;
+
+
 
 const ourCuratorID = 5578275445;
 
